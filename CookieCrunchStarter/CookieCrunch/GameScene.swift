@@ -42,6 +42,8 @@ class GameScene: SKScene {
   let fallingCookieSound = SKAction.playSoundFileNamed("Scrape.wav", waitForCompletion: false)
   let addCookieSound = SKAction.playSoundFileNamed("Drip.wav", waitForCompletion: false)
   
+
+  
   var level: Level!
   
   let tileWidth: CGFloat = 32.0
@@ -50,6 +52,11 @@ class GameScene: SKScene {
   // 游戏图层 & cookies 图层
   let gameLayer = SKNode()
   let cookiesLayer = SKNode()
+  
+  // 图层
+  let tilesLayer = SKNode()
+  let cropLayer = SKCropNode()
+  let maskLayer = SKNode()
   
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder) is not used in this app")
@@ -70,9 +77,60 @@ class GameScene: SKScene {
       x: -tileWidth * CGFloat(numColumns) / 2,
       y: -tileHeight * CGFloat(numRows) / 2)
     
-    cookiesLayer.position = layerPosition
-    gameLayer.addChild(cookiesLayer)
+    tilesLayer.position = layerPosition
+    maskLayer.position = layerPosition
+    cropLayer.maskNode = maskLayer
+    gameLayer.addChild(tilesLayer)
+    gameLayer.addChild(cropLayer)
     
+    cookiesLayer.position = layerPosition
+    cropLayer.addChild(cookiesLayer)
+    
+  }
+  
+  func addTiles() {
+    // 1
+    for row in 0..<numRows {
+      for column in 0..<numColumns {
+        if level.tileAt(column: column, row: row) != nil {
+          let tileNode = SKSpriteNode(imageNamed: "MaskTile")
+          tileNode.size = CGSize(width: tileWidth, height: tileHeight)
+          tileNode.position = pointFor(column: column, row: row)
+          maskLayer.addChild(tileNode)
+        }
+      }
+    }
+    
+    // 2
+    for row in 0...numRows {
+      for column in 0...numColumns {
+        let topLeft     = (column > 0) && (row < numRows)
+          && level.tileAt(column: column - 1, row: row) != nil
+        let bottomLeft  = (column > 0) && (row > 0)
+          && level.tileAt(column: column - 1, row: row - 1) != nil
+        let topRight    = (column < numColumns) && (row < numRows)
+          && level.tileAt(column: column, row: row) != nil
+        let bottomRight = (column < numColumns) && (row > 0)
+          && level.tileAt(column: column, row: row - 1) != nil
+        
+        var value = topLeft.hashValue
+        value = value | topRight.hashValue << 1
+        value = value | bottomLeft.hashValue << 2
+        value = value | bottomRight.hashValue << 3
+        
+        // Values 0 (no tiles), 6 and 9 (two opposite tiles) are not drawn.
+        if value != 0 && value != 6 && value != 9 {
+          let name = String(format: "Tile_%ld", value)
+          let tileNode = SKSpriteNode(imageNamed: name)
+          tileNode.size = CGSize(width: tileWidth, height: tileHeight)
+          var point = pointFor(column: column, row: row)
+          point.x -= tileWidth / 2
+          point.y -= tileHeight / 2
+          tileNode.position = point
+          tilesLayer.addChild(tileNode)
+        }
+      }
+    }
   }
   
   func addSprites(for cookies: Set<Cookie>) {
