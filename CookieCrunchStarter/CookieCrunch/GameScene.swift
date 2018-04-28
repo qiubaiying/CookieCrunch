@@ -64,6 +64,9 @@ class GameScene: SKScene {
   let cropLayer = SKCropNode()
   let maskLayer = SKNode()
   
+  // 高亮图层
+  private var selectionSprite = SKSpriteNode()
+  
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder) is not used in this app")
   }
@@ -178,7 +181,11 @@ class GameScene: SKScene {
         // 4
         swipeFromColumn = column
         swipeFromRow = row
+        
+        showSelectionIndicator(of: cookie)
+        
       }
+      
     }
   }
   
@@ -211,6 +218,8 @@ class GameScene: SKScene {
         // 尝试交换
         trySwap(horizontalDelta: horizontalDelta, verticalDelta: verticalDelta)
         
+        hideSelectionIndicator()
+        
         // 5 通过swipeFromColumn设回nil，游戏将忽略此滑动动作的其余部分。
         swipeFromColumn = nil
       }
@@ -221,6 +230,9 @@ class GameScene: SKScene {
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     swipeFromColumn = nil
     swipeFromRow = nil
+    if selectionSprite.parent != nil && swipeFromColumn != nil {
+      hideSelectionIndicator()
+    }
   }
   // 滑动被取消 （打进电话等情况）
   override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -271,6 +283,28 @@ class GameScene: SKScene {
     run(swapSound)
   }
   
+  // 显示高亮精灵
+  func showSelectionIndicator(of cookie: Cookie) {
+    if selectionSprite.parent != nil {
+      selectionSprite.removeFromParent()
+    }
+    
+    if let sprite = cookie.sprite {
+      let texture = SKTexture(imageNamed: cookie.cookieType.highlightedSpriteName)
+      selectionSprite.size = CGSize(width: tileWidth, height: tileHeight)
+      selectionSprite.run(SKAction.setTexture(texture))
+      
+      sprite.addChild(selectionSprite)
+      selectionSprite.alpha = 1.0
+    }
+  }
+  
+  // 隐藏高亮精灵
+  func hideSelectionIndicator() {
+    selectionSprite.run(SKAction.sequence([
+      SKAction.fadeOut(withDuration: 0.3),
+      SKAction.removeFromParent()]))
+  }
   
 }
 
