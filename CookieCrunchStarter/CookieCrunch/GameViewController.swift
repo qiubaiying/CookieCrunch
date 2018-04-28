@@ -81,11 +81,13 @@ class GameViewController: UIViewController {
     // Present the scene.
     skView.presentScene(scene)
     
-    
+    // 载入游戏等级
     level = Level(filename: "Level_1")
     scene.level = level
     
     scene.addTiles()
+    
+    scene.swipeHandler = handleSwipe
     
     beginGame()
     
@@ -94,7 +96,7 @@ class GameViewController: UIViewController {
   // MARK: IBActions
   @IBAction func shuffleButtonPressed(_: AnyObject) {
     
-    beginGame()
+//    beginGame()
   }
   
   // MARK: View Controller Functions
@@ -117,6 +119,15 @@ class GameViewController: UIViewController {
   func shuffle() {
     let newCookies = level.shuffle()
     self.scene.addSprites(for: newCookies)
+  }
+  
+  func handleSwipe(_ swap: Swap) {
+    view.isUserInteractionEnabled = false
+    
+    level.performSwap(swap)
+    scene.animate(swap) {
+      self.view.isUserInteractionEnabled = true
+    }
   }
   
 }

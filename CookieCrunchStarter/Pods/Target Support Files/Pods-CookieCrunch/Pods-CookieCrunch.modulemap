@@ -1,0 +1,6 @@
+framework module Pods_CookieCrunch {
+  umbrella header "Pods-CookieCrunch-umbrella.h"
+
+  export *
+  module * { export * }
+}

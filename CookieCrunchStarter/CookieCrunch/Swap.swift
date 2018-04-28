@@ -26,62 +26,18 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import SpriteKit
+import Foundation
 
-// MARK: - CookieType
-enum CookieType: Int {
-  case unknown = 0, croissant, cupcake, danish, donut, macaroon, sugarCookie
+struct Swap: CustomStringConvertible {
+  let cookieA: Cookie
+  let cookieB: Cookie
   
-  var spriteName: String {
-    
-    let spriteNames = [
-      "Croissant",
-      "Cupcake",
-      "Danish",
-      "Donut",
-      "Macaroon",
-      "SugarCookie"]
-    // ??
-    return spriteNames[rawValue - 1]
+  init(cookieA: Cookie, cookieB: Cookie) {
+    self.cookieA = cookieA
+    self.cookieB = cookieB
   }
-  
-  var highlightedSpriteName: String {
-    return spriteName + "-Highlighted"
-  }
-  
-  static func random() -> CookieType {
-    return CookieType(rawValue: Int(arc4random_uniform(6)) + 1)!
-  }
-}
-
-
-
-// MARK: - Cookie
-class Cookie: CustomStringConvertible, Hashable {
-  
-  // 计算型属性
-  var hashValue: Int {
-    return row * 10 + column
-  }
-  
-  // 重写 == 方法，static 静态方法不能被子类重写
-  static func ==(lhs: Cookie, rhs: Cookie) -> Bool {
-    return lhs.column == rhs.column && lhs.row == rhs.row
-  }
-
   
   var description: String {
-    return "type:\(cookieType) square:(\(column),\(row))"
-  }
-  
-  var column: Int
-  var row: Int
-  let cookieType: CookieType
-  var sprite: SKSpriteNode?
-  
-  init(column: Int, row: Int, cookieType: CookieType) {
-    self.column = column
-    self.row = row
-    self.cookieType = cookieType
+    return "swap \(cookieA) with \(cookieB)"
   }
 }
