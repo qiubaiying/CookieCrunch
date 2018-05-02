@@ -85,8 +85,21 @@ class Level {
       for column in 0..<numColumns {
         
         if tiles[column, row] != nil {
-          // 2
-          let cookieType = CookieType.random()
+          // 2 随机数据
+//          let cookieType = CookieType.random()
+          
+          // 智能填充数据 3个相同的cookie不能在横竖上连续出现
+          var cookieType: CookieType
+          repeat {
+            cookieType = CookieType.random()
+          } while (
+            column >= 2 &&
+            cookies[column - 1, row]?.cookieType == cookieType &&
+            cookies[column - 2, row]?.cookieType == cookieType)
+            || (row >= 2 &&
+              cookies[column, row - 1]?.cookieType == cookieType &&
+              cookies[column, row - 2]?.cookieType == cookieType)
+          
           
           // 3
           let cookie = Cookie(column: column, row: row, cookieType: cookieType)
