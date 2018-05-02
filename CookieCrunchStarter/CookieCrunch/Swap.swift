@@ -28,7 +28,7 @@
 
 import Foundation
 
-struct Swap: CustomStringConvertible {
+struct Swap: CustomStringConvertible, Hashable {
   let cookieA: Cookie
   let cookieB: Cookie
   
@@ -40,4 +40,18 @@ struct Swap: CustomStringConvertible {
   var description: String {
     return "swap \(cookieA) with \(cookieB)"
   }
+  
+  var hashValue: Int {
+    // ^ 按位异或
+    return cookieA.hashValue ^ cookieB.hashValue
+  }
+  
+  // 判断加
+  static func ==(lhs: Swap, rhs: Swap) -> Bool {
+    return (lhs.cookieA == rhs.cookieA && lhs.cookieB == rhs.cookieB) ||
+      (lhs.cookieB == rhs.cookieA && lhs.cookieA == rhs.cookieB)
+  }
+
+  
+  
 }
