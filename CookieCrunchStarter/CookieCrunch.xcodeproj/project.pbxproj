@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		024FB1F720946BCD0006EFE1 /* Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024FB1F620946BCD0006EFE1 /* Swap.swift */; };
 		0275274020905B870051CBAF /* Cookie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0275273F20905B870051CBAF /* Cookie.swift */; };
+		02A40B1820999C7B001DC8E0 /* Chain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A40B1720999C7B001DC8E0 /* Chain.swift */; };
 		02E24FBC2091B4CD009B5B1F /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E24FBB2091B4CD009B5B1F /* Level.swift */; };
 		170D54281FB6919C00BB205A /* Grid.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 170D54271FB6919C00BB205A /* Grid.atlas */; };
 		1769DFF91FE3818B00F99A23 /* LevelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1769DFF81FE3818B00F99A23 /* LevelData.swift */; };
@@ -37,6 +38,7 @@
 /* Begin PBXFileReference section */
 		024FB1F620946BCD0006EFE1 /* Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swap.swift; sourceTree = "<group>"; };
 		0275273F20905B870051CBAF /* Cookie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cookie.swift; sourceTree = "<group>"; };
+		02A40B1720999C7B001DC8E0 /* Chain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chain.swift; sourceTree = "<group>"; };
 		02E24FBB2091B4CD009B5B1F /* Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
 		170D54271FB6919C00BB205A /* Grid.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Grid.atlas; sourceTree = "<group>"; };
 		1769DFF81FE3818B00F99A23 /* LevelData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelData.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				0275273F20905B870051CBAF /* Cookie.swift */,
 				02E24FBB2091B4CD009B5B1F /* Level.swift */,
 				024FB1F620946BCD0006EFE1 /* Swap.swift */,
+				02A40B1720999C7B001DC8E0 /* Chain.swift */,
 				17A7E5711FB513CC0044C48F /* AppDelegate.swift */,
 				17A7E57B1FB513CC0044C48F /* Main.storyboard */,
 				186E13E02069D3DE003EBCA0 /* LaunchScreen.storyboard */,
@@ -232,6 +235,7 @@
 				17A7E59D1FB528160044C48F /* Tile.swift in Sources */,
 				1769DFF91FE3818B00F99A23 /* LevelData.swift in Sources */,
 				17A7E57A1FB513CC0044C48F /* GameViewController.swift in Sources */,
+				02A40B1820999C7B001DC8E0 /* Chain.swift in Sources */,
 				0275274020905B870051CBAF /* Cookie.swift in Sources */,
 				02E24FBC2091B4CD009B5B1F /* Level.swift in Sources */,
 				17A7E5721FB513CC0044C48F /* AppDelegate.swift in Sources */,

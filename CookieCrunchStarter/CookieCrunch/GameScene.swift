@@ -327,6 +327,91 @@ class GameScene: SKScene {
     run(invalidSwapSound)
   }
   
+  func animateMatchedCookies(for chains: Set<Chain>, completion: @escaping () -> Void) {
+    for chain in chains {
+      for cookie in chain.cookies {
+        if let sprite = cookie.sprite {
+          if sprite.action(forKey: "removing") == nil {
+            let scaleAction = SKAction.scale(to: 0.1, duration: 0.3)
+            scaleAction.timingMode = .easeOut
+            sprite.run(SKAction.sequence([scaleAction, SKAction.removeFromParent()]),
+                       withKey: "removing")
+          }
+        }
+      }
+    }
+    run(matchSound)
+    run(SKAction.wait(forDuration: 0.3), completion: completion)
+  }
+  
+  func animateNewCookies(in columns: [[Cookie]], completion: @escaping () -> Void) {
+    // 1
+    var longestDuration: TimeInterval = 0
+    
+    for array in columns {
+      // 2
+      let startRow = array[0].row + 1
+      
+      for (index, cookie) in array.enumerated() {
+        // 3
+        let sprite = SKSpriteNode(imageNamed: cookie.cookieType.spriteName)
+        sprite.size = CGSize(width: tileWidth, height: tileHeight)
+        sprite.position = pointFor(column: cookie.column, row: startRow)
+        cookiesLayer.addChild(sprite)
+        cookie.sprite = sprite
+        // 4
+        let delay = 0.1 + 0.2 * TimeInterval(array.count - index - 1)
+        // 5
+        let duration = TimeInterval(startRow - cookie.row) * 0.1
+        longestDuration = max(longestDuration, duration + delay)
+        // 6
+        let newPosition = pointFor(column: cookie.column, row: cookie.row)
+        let moveAction = SKAction.move(to: newPosition, duration: duration)
+        moveAction.timingMode = .easeOut
+        sprite.alpha = 0
+        sprite.run(
+          SKAction.sequence([
+            SKAction.wait(forDuration: delay),
+            SKAction.group([
+              SKAction.fadeIn(withDuration: 0.05),
+              moveAction,
+              addCookieSound])
+            ]))
+      }
+    }
+    // 7
+    run(SKAction.wait(forDuration: longestDuration), completion: completion)
+  }
+  
+  func animateFallingCookies(in columns: [[Cookie]], completion: @escaping () -> Void) {
+    // 1
+    var longestDuration: TimeInterval = 0
+    for array in columns {
+      for (index, cookie) in array.enumerated() {
+        let newPosition = pointFor(column: cookie.column, row: cookie.row)
+        // 2
+        let delay = 0.05 + 0.15 * TimeInterval(index)
+        // 3
+        let sprite = cookie.sprite!   // sprite always exists at this point
+        let duration = TimeInterval(((sprite.position.y - newPosition.y) / tileHeight) * 0.1)
+        // 4
+        longestDuration = max(longestDuration, duration + delay)
+        // 5
+        let moveAction = SKAction.move(to: newPosition, duration: duration)
+        moveAction.timingMode = .easeOut
+        sprite.run(
+          SKAction.sequence([
+            SKAction.wait(forDuration: delay),
+            SKAction.group([moveAction, fallingCookieSound])]))
+      }
+    }
+    
+    // 6
+    run(SKAction.wait(forDuration: longestDuration), completion: completion)
+  }
+  
+  
+  
 }
 
 

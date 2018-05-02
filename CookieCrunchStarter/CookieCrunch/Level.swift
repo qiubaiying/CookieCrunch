@@ -231,5 +231,148 @@ class Level {
   }
   
   
+  func removeMatches() -> Set<Chain> {
+
+    
+    let horizontalChains = detectHorizontalMatches()
+    let verticalChains = detectVerticalMatches()
+    
+    removeCookies(in: horizontalChains)
+    removeCookies(in: verticalChains)
+    
+    return horizontalChains.union(verticalChains)
+  }
+  
+  private func detectHorizontalMatches() -> Set<Chain> {
+    // 1
+    var set: Set<Chain> = []
+    // 2
+    for row in 0..<numRows {
+      var column = 0
+      while column < numColumns-2 {
+        // 3
+        if let cookie = cookies[column, row] {
+          let matchType = cookie.cookieType
+          // 4
+          if cookies[column + 1, row]?.cookieType == matchType &&
+            cookies[column + 2, row]?.cookieType == matchType {
+            // 5
+            let chain = Chain(chainType: .horizontal)
+            repeat {
+              chain.add(cookie: cookies[column, row]!)
+              column += 1
+            } while column < numColumns && cookies[column, row]?.cookieType == matchType
+            
+            set.insert(chain)
+            continue
+          }
+        }
+        // 6
+        column += 1
+      }
+    }
+    return set
+  }
+  
+  private func detectVerticalMatches() -> Set<Chain> {
+    var set: Set<Chain> = []
+    
+    for column in 0..<numColumns {
+      var row = 0
+      while row < numRows-2 {
+        if let cookie = cookies[column, row] {
+          let matchType = cookie.cookieType
+          
+          if cookies[column, row + 1]?.cookieType == matchType &&
+            cookies[column, row + 2]?.cookieType == matchType {
+            let chain = Chain(chainType: .vertical)
+            repeat {
+              chain.add(cookie: cookies[column, row]!)
+              row += 1
+            } while row < numRows && cookies[column, row]?.cookieType == matchType
+            
+            set.insert(chain)
+            continue
+          }
+        }
+        row += 1
+      }
+    }
+    return set
+  }
+  
+  private func removeCookies(in chains: Set<Chain>) {
+    for chain in chains {
+      for cookie in chain.cookies {
+        cookies[cookie.column, cookie.row] = nil
+      }
+    }
+  }
+  
+  func topUpCookies() -> [[Cookie]] {
+    var columns: [[Cookie]] = []
+    var cookieType: CookieType = .unknown
+    
+    for column in 0..<numColumns {
+      var array: [Cookie] = []
+      
+      // 1
+      var row = numRows - 1
+      while row >= 0 && cookies[column, row] == nil {
+        // 2
+        if tiles[column, row] != nil {
+          // 3
+          var newCookieType: CookieType
+          repeat {
+            newCookieType = CookieType.random()
+          } while newCookieType == cookieType
+          cookieType = newCookieType
+          // 4
+          let cookie = Cookie(column: column, row: row, cookieType: cookieType)
+          cookies[column, row] = cookie
+          array.append(cookie)
+        }
+        
+        row -= 1
+      }
+      // 5
+      if !array.isEmpty {
+        columns.append(array)
+      }
+    }
+    return columns
+  }
+  
+  func fillHoles() -> [[Cookie]] {
+    var columns: [[Cookie]] = []
+    // 1
+    for column in 0..<numColumns {
+      var array: [Cookie] = []
+      for row in 0..<numRows {
+        // 2
+        if tiles[column, row] != nil && cookies[column, row] == nil {
+          // 3
+          for lookup in (row + 1)..<numRows {
+            if let cookie = cookies[column, lookup] {
+              // 4
+              cookies[column, lookup] = nil
+              cookies[column, row] = cookie
+              cookie.row = row
+              // 5
+              array.append(cookie)
+              // 6
+              break
+            }
+          }
+        }
+      }
+      // 7
+      if !array.isEmpty {
+        columns.append(array)
+      }
+    }
+    return columns
+  }
+  
 }
 

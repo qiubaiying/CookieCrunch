@@ -138,10 +138,37 @@ class GameViewController: UIViewController {
       }
     } else {
 //      view.isUserInteractionEnabled = true
-      scene.animateInvalidSwap(swap) {
-        self.view.isUserInteractionEnabled = true
+      scene.animate(swap, completion: handleMatches)
+//      self.view.isUserInteractionEnabled = true
+    }
+  }
+  
+  func handleMatches() {
+    
+    
+    
+    let chains = level.removeMatches()
+    
+    // 递归出口
+    if chains.count == 0 {
+      beginNextTurn()
+      return
+    }
+    scene.animateMatchedCookies(for: chains) {
+      let columns = self.level.fillHoles()
+      self.scene.animateFallingCookies(in: columns) {
+        let columns = self.level.topUpCookies()
+        self.scene.animateNewCookies(in: columns) {
+//          self.view.isUserInteractionEnabled = true
+          self.handleMatches();
+        }
       }
     }
+  }
+  
+  func beginNextTurn() {
+    level.detectPossibleSwaps()
+    view.isUserInteractionEnabled = true
   }
   
 }
